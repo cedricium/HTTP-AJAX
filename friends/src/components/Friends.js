@@ -14,9 +14,11 @@ const Friend = (props) => {
 const Friends = (props) => {
   const { friends } = props
   return (
-    {friends.map(friend => (
-      <Friend key={friend.email} friend={friend} />
-    ))}
+    <div>
+      {friends.map(friend => (
+        <Friend key={friend.id} friend={friend} />
+      ))}
+    </div>
   )
 }
 
