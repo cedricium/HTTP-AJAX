@@ -60,6 +60,12 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
+        <h1>
+          Frens{` `}
+          <span role="img" aria-label="let's all be friends">
+            👫
+          </span>
+        </h1>
         <form onSubmit={this.addFriend}>
           <label>
             Name:
@@ -93,6 +99,7 @@ class App extends React.Component {
           </label>
           <input type="submit" value="Add Friend" />
         </form>
+        {this.state.error && <p className="error-message">{this.state.error}</p>}
         <Friends friends={this.state.friends} />
       </div>
     )
