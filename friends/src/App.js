@@ -11,6 +11,7 @@ class App extends React.Component {
     this.state = {
       friends: [],
       error: '',
+      activeFriend: null,
       friend: {
         name: '',
         age: '',
@@ -19,6 +20,8 @@ class App extends React.Component {
     }
     this.getFriends = this.getFriends.bind(this)
     this.addFriend = this.addFriend.bind(this)
+    this.updateFriend = this.updateFriend.bind(this)
+    this.setActiveFriend = this.setActiveFriend.bind(this)
     this.handleChange = this.handleChange.bind(this)
   }
 
@@ -43,23 +46,61 @@ class App extends React.Component {
       })).data
       this.setState({
         friends,
-        name: '',
-        age: '',
-        email: ''
+        friend: {
+          name: '',
+          age: '',
+          email: '',
+        }
       })
     } catch (error) {
       this.setState(error)
     }
   }
 
+  async updateFriend(e) {
+    e.preventDefault()
+    const { activeFriend } = this.state
+    try {
+      const friends = (await axios.put(`http://localhost:5000/friends/${activeFriend.id}`, {
+        ...this.state.activeFriend
+      })).data
+      this.setState({
+        friends,
+        activeFriend: null,
+      })
+    } catch (error) {
+      this.setState(error)
+    }
+  }
+
+  async deleteFriend(e) {
+    // TODO
+  }
+
+  setActiveFriend(friend) {
+    // TODO
+    this.setState({ activeFriend: friend })
+  }
+
   handleChange(e) {
     e.persist()
-    this.setState(prevState => ({
-      friend: {
-        ...prevState.friend,
-        [e.target.name]: e.target.value
+    this.setState(prevState => {
+      if (prevState.activeFriend) {
+        return {
+          activeFriend: {
+            ...prevState.activeFriend,
+            [e.target.name]: e.target.value
+          }
+        }
+      } else {
+        return {
+          friend: {
+            ...prevState.friend,
+            [e.target.name]: e.target.value
+          }
+        }
       }
-    }))
+    })
   }
 
   render() {
@@ -72,12 +113,19 @@ class App extends React.Component {
           </span>
         </h1>
         <FriendForm
+          activeFriend={this.state.activeFriend}
           friend={this.state.friend}
           handleChange={this.handleChange}
-          addFriend={this.addFriend}
+          handleSubmit={this.state.activeFriend
+            ? this.updateFriend
+            : this.addFriend
+          }
         />
         {this.state.error && <p className="error-message">{this.state.error}</p>}
-        <Friends friends={this.state.friends} />
+        <Friends 
+          friends={this.state.friends}
+          setActiveFriend={this.setActiveFriend}
+        />
       </div>
     )
   }

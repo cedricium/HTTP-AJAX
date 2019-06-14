@@ -7,7 +7,7 @@ const FriendsWrapper = styled.section`
   flex-wrap: wrap;
   justify-content: flex-start;
   align-content: center;
-  margin: 40px 20px;
+  margin: 40px 0;
   color: #222222;
 
   @media (max-width: 360px) {
@@ -55,7 +55,7 @@ const FriendField = styled.p`
 `
 
 const Friend = (props) => {
-  const { friend } = props
+  const { friend, setActiveFriend } = props
   return (
     <FriendCard>
       <FriendField primary>{friend.name}</FriendField>
@@ -64,19 +64,27 @@ const Friend = (props) => {
         <span>Email</span>
         <a href={`mailto:${friend.email}`}>{friend.email}</a>
       </FriendField>
+      <FriendField>
+        <span>Actions</span>
+        <button onClick={() => setActiveFriend(friend)}>Update Friend</button>
+        <button>Delete Friend</button>
+      </FriendField>
     </FriendCard>
   )
 }
 
 const Friends = (props) => {
-  const { friends } = props
+  const { friends, setActiveFriend } = props
   return (
     <FriendsWrapper>
       {friends.map(friend => (
-        <Friend key={friend.id} friend={friend} />
+        <Friend key={friend.id} friend={friend} setActiveFriend={setActiveFriend} />
       ))}
     </FriendsWrapper>
   )
 }
+
+// TODO
+//  - check PropTypes
 
 export default Friends
