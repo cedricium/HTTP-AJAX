@@ -55,7 +55,7 @@ const FriendField = styled.p`
 `
 
 const Friend = (props) => {
-  const { friend, setActiveFriend } = props
+  const { friend, deleteFriend, setActiveFriend } = props
   return (
     <FriendCard>
       <FriendField primary>{friend.name}</FriendField>
@@ -67,18 +67,23 @@ const Friend = (props) => {
       <FriendField>
         <span>Actions</span>
         <button onClick={() => setActiveFriend(friend)}>Update Friend</button>
-        <button>Delete Friend</button>
+        <button onClick={(e) => deleteFriend(e, friend)}>Delete Friend</button>
       </FriendField>
     </FriendCard>
   )
 }
 
 const Friends = (props) => {
-  const { friends, setActiveFriend } = props
+  const { friends, deleteFriend, setActiveFriend } = props
   return (
     <FriendsWrapper>
       {friends.map(friend => (
-        <Friend key={friend.id} friend={friend} setActiveFriend={setActiveFriend} />
+        <Friend
+          key={friend.id}
+          friend={friend}
+          deleteFriend={deleteFriend}
+          setActiveFriend={setActiveFriend}
+        />
       ))}
     </FriendsWrapper>
   )

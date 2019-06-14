@@ -21,6 +21,7 @@ class App extends React.Component {
     this.getFriends = this.getFriends.bind(this)
     this.addFriend = this.addFriend.bind(this)
     this.updateFriend = this.updateFriend.bind(this)
+    this.deleteFriend = this.deleteFriend.bind(this)
     this.setActiveFriend = this.setActiveFriend.bind(this)
     this.handleChange = this.handleChange.bind(this)
   }
@@ -34,7 +35,7 @@ class App extends React.Component {
       const friends = (await axios.get('http://localhost:5000/friends')).data
       this.setState({ friends })
     } catch (error) {
-      this.setState(error)
+      this.setState({ error })
     }
   }
 
@@ -53,7 +54,7 @@ class App extends React.Component {
         }
       })
     } catch (error) {
-      this.setState(error)
+      this.setState({ error })
     }
   }
 
@@ -69,16 +70,23 @@ class App extends React.Component {
         activeFriend: null,
       })
     } catch (error) {
-      this.setState(error)
+      this.setState({ error })
     }
   }
 
-  async deleteFriend(e) {
-    // TODO
+  async deleteFriend(e, friend) {
+    e.preventDefault()
+    const { id } = friend
+    try {
+      const friends =
+        (await axios.delete(`http://localhost:5000/friends/${id}`)).data
+      this.setState({friends})
+    } catch (error) {
+      this.setState({ error })
+    }
   }
 
   setActiveFriend(friend) {
-    // TODO
     this.setState({ activeFriend: friend })
   }
 
@@ -124,6 +132,7 @@ class App extends React.Component {
         {this.state.error && <p className="error-message">{this.state.error}</p>}
         <Friends 
           friends={this.state.friends}
+          deleteFriend={this.deleteFriend}
           setActiveFriend={this.setActiveFriend}
         />
       </div>
