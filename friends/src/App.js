@@ -3,6 +3,7 @@ import './App.css';
 import axios from 'axios'
 
 import Friends from './components/Friends'
+import FriendForm from './components/FriendForm'
 
 class App extends React.Component {
   constructor() {
@@ -10,9 +11,11 @@ class App extends React.Component {
     this.state = {
       friends: [],
       error: '',
-      name: '',
-      age: '',
-      email: '',
+      friend: {
+        name: '',
+        age: '',
+        email: '',
+      }
     }
     this.getFriends = this.getFriends.bind(this)
     this.addFriend = this.addFriend.bind(this)
@@ -36,9 +39,7 @@ class App extends React.Component {
     e.preventDefault()
     try {
       const friends = (await axios.post('http://localhost:5000/friends', {
-        name: this.state.name,
-        age: this.state.age,
-        email: this.state.email,
+        ...this.state.friend
       })).data
       this.setState({
         friends,
@@ -52,9 +53,13 @@ class App extends React.Component {
   }
 
   handleChange(e) {
-    this.setState({
-      [e.target.name]: e.target.value
-    })
+    e.persist()
+    this.setState(prevState => ({
+      friend: {
+        ...prevState.friend,
+        [e.target.name]: e.target.value
+      }
+    }))
   }
 
   render() {
@@ -66,39 +71,11 @@ class App extends React.Component {
             👫
           </span>
         </h1>
-        <form onSubmit={this.addFriend}>
-          <label>
-            Name:
-            <input
-              name="name"
-              type="text"
-              value={this.state.name}
-              placeholder="Jane Doe"
-              onChange={this.handleChange}
-            />
-          </label>
-          <label>
-            Age:
-            <input
-              name="age"
-              type="number"
-              value={this.state.age}
-              placeholder="23"
-              onChange={this.handleChange}
-            />
-          </label>
-          <label>
-            Email:
-            <input
-              name="email"
-              type="email"
-              value={this.state.email}
-              placeholder="jane.doe@example.com"
-              onChange={this.handleChange}
-            />
-          </label>
-          <input type="submit" value="Add Friend" />
-        </form>
+        <FriendForm
+          friend={this.state.friend}
+          handleChange={this.handleChange}
+          addFriend={this.addFriend}
+        />
         {this.state.error && <p className="error-message">{this.state.error}</p>}
         <Friends friends={this.state.friends} />
       </div>
